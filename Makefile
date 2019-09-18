@@ -1,5 +1,5 @@
 CC ?= gcc
-CFLAGS += -std=c99 -Wall -O3
+CFLAGS += -std=c99 -Wall -O3 -pipe -march=native -g -fgnu89-inline -flto -D_FORTIFY_SOURCE=2 -fPIC -fstack-protector-all
 LDFLAGS += -lm
 MAKE ?= make
 PREFIX ?= /usr/local
