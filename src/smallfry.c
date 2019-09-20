@@ -66,6 +66,9 @@ static double aae_factor(uint8_t *orig, uint8_t *cmp, int orig_stride,
     int i, j;
     int cnt;
 
+    int orig_stride_inc = 8 * orig_stride;
+    int cmp_stride_inc = 8 * cmp_stride;
+
     sum = 0.0;
     cnt = 0;
     old = orig;
@@ -78,12 +81,15 @@ static double aae_factor(uint8_t *orig, uint8_t *cmp, int orig_stride,
             cnt++;
 
             calc  = abs(DVAL(j) - DVAL(j + 1));
-            calc /= (abs(DVAL(j - 1) - DVAL(j)) + abs(DVAL(j + 1) - DVAL(j + 2)) + 0.0001) / 2.0;
+            /** calc /= (abs(DVAL(j - 1) - DVAL(j)) + abs(DVAL(j + 1) - DVAL(j + 2)) + 0.0001) / 2.0; */
+            calc /= (abs(DVAL(j - 1) - DVAL(j)) + abs(DVAL(j + 1) - DVAL(j + 2)) + 0.0001);
+            calc *= 2.0;
 
             if (calc > 5.0)
                 sum += 1.0;
             else if (calc > 2.0)
-                sum += (calc - 2.0) / (5.0 - 2.0);
+                /** sum += (calc - 2.0) / (5.0 - 2.0); */
+                sum += (calc - 2.0) / (3.0);
         }
 
         old += orig_stride;
@@ -100,16 +106,21 @@ static double aae_factor(uint8_t *orig, uint8_t *cmp, int orig_stride,
             cnt++;
 
             calc  = abs(DVAL(j) - HDVAL(j, 1));
-            calc /= (abs(HDVAL(j, -1) - DVAL(j)) + abs(HDVAL(j, 1) - HDVAL(j, 2)) + 0.0001) / 2.0;
+            /** calc /= (abs(HDVAL(j, -1) - DVAL(j)) + abs(HDVAL(j, 1) - HDVAL(j, 2)) + 0.0001) / 2.0; */
+            calc /= (abs(HDVAL(j, -1) - DVAL(j)) + abs(HDVAL(j, 1) - HDVAL(j, 2)) + 0.0001);
+            calc *= 2.0;
 
             if (calc > 5.0)
                 sum += 1.0;
             else if (calc > 2.0)
-                sum += (calc - 2.0) / (5.0 - 2.0);
+                /** sum += (calc - 2.0) / (5.0 - 2.0); */
+                sum += (calc - 2.0) / (3.0);
         }
 
-        old += 8 * orig_stride;
-        new += 8 * cmp_stride;
+        /** old += 8 * orig_stride; */
+        /** new += 8 * cmp_stride; */
+        old += orig_stride_inc;
+        new += cmp_stride_inc;
     }
     
     ret = 1 - (sum / (double) cnt);
