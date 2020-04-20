@@ -1,5 +1,5 @@
 CC ?= gcc
-CFLAGS += -std=c99 -Wall -O3
+CFLAGS += -std=c99 -Wall -O3 -march=native
 LDFLAGS += -lm
 MAKE ?= make
 PREFIX ?= /usr/local

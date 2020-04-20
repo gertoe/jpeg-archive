@@ -13,14 +13,14 @@ SRC= \
 OBJ = $(SRC:.c=.o)
 
 INCLUDES = -I./include -I../include
-CC = gcc
+CC ?= gcc
 
 ifeq ($(RELEASE),1)
 OUTDIR=../build/release
-CFLAGS=-O2 -Wall
+CFLAGS +=-O2 -Wall
 else
 OUTDIR=../build/debug
-CFLAGS=-g -Wall
+CFLAGS +=-g -Wall
 endif
 
 OUT = $(OUTDIR)/test
