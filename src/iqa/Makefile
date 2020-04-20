@@ -15,7 +15,7 @@ CC ?= gcc
 
 ifeq ($(RELEASE),1)
 OUTDIR=./build/release
-CFLAGS +=-O2 -Wall
+CFLAGS= -Wall -O3 -pipe -march=native -flto -D_FORTIFY_SOURCE=2 -fPIC -fstack-protector-all
 else
 OUTDIR=./build/debug
 CFLAGS=-g -Wall
