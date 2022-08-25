@@ -78,6 +78,9 @@ int subsample = SUBSAMPLE_DEFAULT;
 // Quiet mode (less output)
 int quiet = 0;
 
+// Force recompress mode (if already compressed by jpeg-recompress)
+int force = 0;
+
 static enum QUALITY_PRESET parseQuality(const char *s) {
     if (!strcmp("low", s))
         return LOW;
@@ -238,10 +241,11 @@ void usage(void) {
     printf("  -S, --subsample [arg]        set subsampling method to one of 'default', 'disable' [default]\n");
     printf("  -T, --input-filetype [arg]   set input file type to one of 'auto', 'jpeg', 'ppm' [auto]\n");
     printf("  -Q, --quiet                  only print out errors\n");
+    printf("  -f, --force                  force recompress if image is already compressed by jpeg-recompress\n");
 }
 
 int main (int argc, char **argv) {
-    const char *optstring = "Vht:q:n:x:l:am:sd:z:rcpS:T:Q";
+    const char *optstring = "Vht:q:n:x:l:am:sd:z:rcpS:T:Q:f";
     static const struct option opts[] = {
         { "version", no_argument, 0, 'V' },
         { "help", no_argument, 0, 'h' },
@@ -261,6 +265,7 @@ int main (int argc, char **argv) {
         { "subsample", required_argument, 0, 'S' },
         { "input-filetype", required_argument, 0, 'T' },
         { "quiet", no_argument, 0, 'Q' },
+        { "force", no_argument, 0, 'f' },
         { 0, 0, 0, 0 }
     };
     int opt, longind = 0;
@@ -326,6 +331,9 @@ int main (int argc, char **argv) {
             break;
         case 'Q':
             quiet = 1;
+            break;
+        case 'f':
+            force = 1;
             break;
         };
     }
@@ -395,6 +403,7 @@ int main (int argc, char **argv) {
     if (inputFiletype == FILETYPE_JPEG) {
         // Read metadata (EXIF / IPTC / XMP tags)
         if (getMetadata(buf, bufSize, &metaBuf, &metaSize, COMMENT)) {
+          if (!force) {
             if (copyFiles) {
                 info("File already processed by jpeg-recompress!\n");
                 file = openOutput(outputPath);
@@ -415,6 +424,8 @@ int main (int argc, char **argv) {
                 return 2;
             }
         }
+      }
+
     }
 
     if (strip) {
@@ -579,7 +590,7 @@ int main (int argc, char **argv) {
 
     /*
      * Write comment (COM metadata) so we know not to reprocess this file in
-     * the future if it gets passed in again.
+     * the future (unless forced) if it gets passed in again.
      */
     fputc(0xff, file);
     fputc(0xfe, file);
