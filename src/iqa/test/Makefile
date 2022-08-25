@@ -13,20 +13,20 @@ SRC= \
 OBJ = $(SRC:.c=.o)
 
 INCLUDES = -I./include -I../include
-CC ?= gcc
+CC ?= icc
 
 ifeq ($(RELEASE),1)
 OUTDIR=../build/release
-CFLAGS= -Wall -O3 -pipe -march=native -flto -D_FORTIFY_SOURCE=2 -fPIC -fstack-protector-all
+CFLAGS= -Wall -O3 -pipe -xHost -static-intel -flto -D_FORTIFY_SOURCE=2 -fPIC -pie -fstack-protector-all
 
 else
 OUTDIR=../build/debug
-CFLAGS +=-g -Wall
+CFLAGS += -O0 -g -Wall
 endif
 
 OUT = $(OUTDIR)/test
 
-LFLAGS=-L$(OUTDIR)
+LFLAGS=-L$(OUTDIR) -static-intel
 LIBS=$(OUTDIR)/libiqa.a -lm -lrt
 
 .c.o:

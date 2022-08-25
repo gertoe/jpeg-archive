@@ -11,14 +11,15 @@ SRC= \
 OBJ = $(SRC:.c=.o)
 
 INCLUDES = -I./include
-CC ?= gcc
+CC ?= icc
 
 ifeq ($(RELEASE),1)
 OUTDIR=./build/release
-CFLAGS= -Wall -O3 -pipe -march=native -flto -D_FORTIFY_SOURCE=2 -fPIC -fstack-protector-all
+CFLAGS= -Wall -O3 -pipe -xHost -static-intel -flto -D_FORTIFY_SOURCE=2 -fPIC -pie -fstack-protector-all
+LDFLAGS += -static-intel -Wl,-O3 -Wl,--as-needed -Wl,-z,now -Wl,-z,relro
 else
 OUTDIR=./build/debug
-CFLAGS=-g -Wall
+CFLAGS += -O0 -g -Wall
 endif
 
 OUT = $(OUTDIR)/libiqa.a
