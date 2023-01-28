@@ -15,7 +15,7 @@ CC ?= icc
 
 ifeq ($(RELEASE),1)
 OUTDIR=./build/release
-CFLAGS= -Wall -O3 -pipe -xHost -static-intel -flto -D_FORTIFY_SOURCE=2 -fPIC -pie -fstack-protector-all
+CFLAGS= -Wall -O3 -pipe -xHost -ipo -static-intel -flto -D_FORTIFY_SOURCE=2 -fPIC -pie -fstack-protector-all
 LDFLAGS += -static-intel -Wl,-O3 -Wl,--as-needed -Wl,-z,now -Wl,-z,relro
 else
 OUTDIR=./build/debug

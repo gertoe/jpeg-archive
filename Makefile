@@ -1,5 +1,5 @@
 CC ?= icc
-CFLAGS += -std=c99 -Wall -O3 -pipe -xHost -static-intel -fgnu89-inline -flto -D_FORTIFY_SOURCE=2 -fPIC -pie -fstack-protector-all
+CFLAGS += -std=c99 -Wall -O3 -pipe -xHost -ipo -static-intel -fgnu89-inline -flto -D_FORTIFY_SOURCE=2 -fPIC -pie -fstack-protector-all
 LDFLAGS += -static-intel -Wl,-O3 -Wl,--as-needed -Wl,-z,now -Wl,-z,relro
 LDFLAGS += -lm
 MAKE ?= make
